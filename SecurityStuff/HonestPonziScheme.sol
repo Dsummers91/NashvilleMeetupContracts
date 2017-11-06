@@ -19,10 +19,10 @@ contract HonestPonziScheme {
     currentTier.push(msg.sender);
   }
 
-  function payout() internal {
+  function payout() public {
     require(currentTier.length == numberToFillTier);
     uint256 individualPayout = this.balance / previousTier.length;
-    for (var i = 0; i < previousTier.length; i++) {
+    for (uint256 i = 0; i < previousTier.length; i++) {
       previousTier[i].transfer(individualPayout);
     }
     previousTier = currentTier;
