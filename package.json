@@ -4,7 +4,9 @@
   "description": "Smart Contracts for the Nashville Blockhain/Ethereum Meetup",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd NashvilleBeerToken/client && http-server",
+    "develop": "cd NashvilleBeerToken && truffle develop"
   },
   "repository": {
     "type": "git",
@@ -17,5 +19,9 @@
     "url": "https://github.com/Dsummers91/NashvilleMeetupContracts/issues"
   },
   "homepage": "https://github.com/Dsummers91/NashvilleMeetupContracts#readme",
-  "devDependencies": {}
+  "devDependencies": {},
+  "dependencies": {
+    "http-server": "^0.10.0",
+    "truffle": "^4.0.1"
+  }
 }
