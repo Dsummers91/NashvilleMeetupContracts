@@ -1,5 +1,5 @@
 {
-  "name": "@hashed_health/NashvilleMeetupContracts",
+  "name": "nashvillemeetupcontracts",
   "version": "1.0.0",
   "description": "Smart Contracts for the Nashville Blockhain/Ethereum Meetup",
   "main": "index.js",
@@ -16,5 +16,6 @@
   "bugs": {
     "url": "https://github.com/Dsummers91/NashvilleMeetupContracts/issues"
   },
-  "homepage": "https://github.com/Dsummers91/NashvilleMeetupContracts#readme"
+  "homepage": "https://github.com/Dsummers91/NashvilleMeetupContracts#readme",
+  "devDependencies": {}
 }
