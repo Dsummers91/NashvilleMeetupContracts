@@ -1,5 +1,5 @@
 var web3;
-var abi = [{ "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "claimToken", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "_owner", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "owner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_owner", "type": "address" }], "name": "assignToken", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_to", "type": "address" }, { "name": "_amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_name", "type": "bytes32" }], "name": "redeemBeer", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "maxSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [{ "name": "_maxSupply", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }], "name": "LogBeerClaimed", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": false, "name": "name", "type": "bytes32" }], "name": "LogBeerRedeemed", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "from", "type": "address" }, { "indexed": true, "name": "to", "type": "address" }], "name": "LogTransfer", "type": "event" }];
+var abi = [{ "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [], "name": "claimToken", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [{ "name": "_owner", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "owner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "_owner", "type": "address" }], "name": "assignToken", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_to", "type": "address" }, { "name": "_amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_name", "type": "bytes32" }], "name": "redeemBeer", "outputs": [{ "name": "", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "maxSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [{ "name": "_maxSupply", "type": "uint256" }], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": false, "name": "date", "type": "uint256" }], "name": "LogBeerClaimed", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": false, "name": "name", "type": "bytes32" }, { "indexed": false, "name": "date", "type": "uint256" }], "name": "LogBeerRedeemed", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "name": "from", "type": "address" }, { "indexed": true, "name": "to", "type": "address" }, { "indexed": false, "name": "date", "type": "uint256" }], "name": "LogTransfer", "type": "event" }]
 var address = '0x345ca3e014aaf5dca488057592ee47305d9b3e10';
 
 if (typeof web3 == undefined) {
@@ -22,6 +22,7 @@ function init() {
     getTotalClaimed();
     getUserBalance();
     getCurrentAddress();
+    getLogs();
 }
 
 function getTokenSupply() {
@@ -71,10 +72,26 @@ $('#redeem-button').on('click', () => {
 })
 
 /** EVENTS */
+var numberOfLogs;
+function getLogs() {
+    contract.allEvents({ fromBlock: 0, toBlock: 'latest' }).get((err, logs) => {
+        if (numberOfLogs !== logs.length) {
+            $('#claimed-log').html('');
+            $('#transferred-log').html('');
+            $('#redeemed-log').html('');
+            for (var i = 0; i < logs.length; i++) {
+                var log = logs[i];
+                if (log.event === 'LogBeerClaimed') $('#claimed-log').append('<tr><td scope="row"><small>' + log.args.owner + '</small></td><td>' + new Date(log.args.date*1000) + '</td></tr>');
+                if (log.event === 'LogTransfer') $('#transferred-log').append('<tr><td scope="row"><small>' + log.args.from + '</small></td><td><small>' + log.args.to + '</small></td><td>' + new Date(log.args.date*1000) + '</td></tr>');
+                if (log.event === 'LogBeerRedeemed') $('#redeemed-log').append('<tr><td scope="row"><small>' + web3.toUtf8(log.args.name) + '</small></td><td>' + new Date(log.args.date*1000) + '</td></tr>');
+            }
+            numberOfLogs = logs.length;
+        }
+    })
+}
 
-contract.allEvents({ fromBlock: 0, toBlock: 'latest' }).watch((err, res) => {
-    if (res.event === 'LogBeerClaimed') $('#claimed-log').append('<tr><td scope="row"><small>' + res.args.owner + '</small></td><td>' + new Date() + '</td></tr>');
-    if (res.event === 'LogTransfer') $('#transferred-log').append('<tr><td scope="row"><small>' + res.args.to + '</small></td><td><small>' + res.args.from + '</small></td><td>' + new Date() + '</td></tr>');
-    if (res.event === 'LogBeerRedeemed') $('#redeemed-log').append('<tr><td scope="row"><small>' + web3.toUtf8(res.args.name) + '</small></td><td>' + new Date() + '</td></tr>');
+// just loop through this to make it pseudo-realtime
+setInterval(() => {
     init();
-})
+    getLogs();
+}, 2500);
