@@ -14,7 +14,7 @@ if (typeof web3 == "undefined") {
     web3.version.getNetwork((error, result) => {
     // If not on Mainnet, and not on localhost, use external 
         if (result == 1 || result == 42) {
-            address = (result === 1 ? '0xe63a46c4019eb0fc86ab90dc0b1e782fe8883aa6' : '0x2a258822ca7dd278ce41acbc33bc9b74ab61df21');
+            address = (result == 1 ? '0xe63a46c4019eb0fc86ab90dc0b1e782fe8883aa6' : '0x2a258822ca7dd278ce41acbc33bc9b74ab61df21');
             web3 = new Web3(web3.currentProvider);
             contract = web3.eth.contract(abi).at(address);
         }
@@ -98,7 +98,7 @@ $('#redeem-button').on('click', () => {
 var numberOfLogs;
 
 function getLogs() {
-    contract.allEvents({}, { fromBlock: 0, toBlock: 'latest' }).get((err, logs) => {
+    contract.allEvents({ fromBlock: 4520460, toBlock: 'latest' }).get((err, logs) => {
         if (numberOfLogs !== logs.length) {
             $('#claimed-log').html('');
             $('#transferred-log').html('');
