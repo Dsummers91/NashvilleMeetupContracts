@@ -1,9 +1,11 @@
-pragma solidity ^0.4.16;
+pragma solidity ^0.4.18;
 
 contract NashvilleBeerToken {
   uint256 public maxSupply;
   uint256 public totalSupply;
   address public owner;
+  bytes32[] public redeemedList;
+  address constant public RECIPIENT = 0xB1384DfE8ac77a700F460C94352bdD47Dc0327eF; // Ethereum Meetup Donation Address
   mapping (address => uint256) balances;
 
   event LogBeerClaimed(address indexed owner, uint256 date);
@@ -34,12 +36,14 @@ contract NashvilleBeerToken {
   function redeemBeer(bytes32 _name) public returns(bool) {
     require(balances[msg.sender] > 0);
     balances[msg.sender]--;
+    redeemedList.push(_name);
     LogBeerRedeemed(msg.sender, _name, now);
   }
 
-  function claimToken() public returns(bool) {
-    require(balances[msg.sender] == 0);
+  function claimToken() public payable returns(bool) {
+    require(msg.value == 1 ether * 0.015);
     require(totalSupply < maxSupply);
+    RECIPIENT.transfer(msg.value);
     balances[msg.sender]++;
     totalSupply++;
     LogBeerClaimed(msg.sender, now);
@@ -51,5 +55,13 @@ contract NashvilleBeerToken {
     balances[_owner]++;
     totalSupply++;
     LogBeerClaimed(_owner, now);
+  }
+
+  function getRedeemedList() constant public returns (bytes32[]) {
+    bytes32[] memory list = new bytes32[](redeemedList.length);
+    for (uint256 i = 0; i < redeemedList.length; i++) {
+      list[i] = redeemedList[i];
+    }
+    return list;
   }
 }
