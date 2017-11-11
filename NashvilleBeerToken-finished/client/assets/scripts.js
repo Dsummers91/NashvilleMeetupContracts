@@ -4,19 +4,23 @@ var address = '0xe63a46c4019eb0fc86ab90dc0b1e782fe8883aa6';
 var remoteNode = false;
 var contract;
 
-contract = web3.eth.contract(abi).at(address);
 
 if (typeof web3 == "undefined") {
     remoteNode = true;
-    contract = web3.eth.contract(abi).at(address);
     web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io/iaTZkCBxLOaADYlRnibN"));
-} else {
+    contract = web3.eth.contract(abi).at(address);
+    init();
+    getLogs();
+    } else {
+    contract = web3.eth.contract(abi).at(address);
     web3.version.getNetwork((error, result) => {
     // If not on Mainnet, and not on localhost, use external 
         if (result == 1 || result == 42) {
             address = (result == 1 ? '0xe63a46c4019eb0fc86ab90dc0b1e782fe8883aa6' : '0x2a258822ca7dd278ce41acbc33bc9b74ab61df21');
             web3 = new Web3(web3.currentProvider);
-            contract = web3.eth.contract(abi).at(address);
+            contract = web3.eth.contract(abi).at(address);    
+            init();
+            getLogs();
         }
     })
 }
@@ -25,8 +29,6 @@ $(document).ready(function() {
     $('#etherscan-link').attr('href',"https://etherscan.io/address/" + address);
 })
 
-init();
-getLogs();
 
 function init() {
     getTokenSupply();
