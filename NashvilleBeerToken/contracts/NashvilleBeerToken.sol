@@ -3,7 +3,7 @@ pragma solidity ^0.4.18;
 import 'tokens/HumanStandardToken.sol';
 
 contract NashvilleBeerToken is HumanStandardToken {
-    address public constant RECIPIENT = 0x627306090abab3a6e1400e9345bc60c78a8bef57;
+    address public constant RECIPIENT = 0xB1384DfE8ac77a700F460C94352bdD47Dc0327eF;
     bytes32[] public claimedList;
     uint256 public maxSupply;
 
@@ -20,20 +20,20 @@ contract NashvilleBeerToken is HumanStandardToken {
         {
             maxSupply = _maxSupply;
         }
-
-    function buyToken() payable {
-        require(msg.value == .2 ether);
-        balances[msg.sender] += 1 * 10 ** 18;
-        totalSupply += 1 * 10 ** 18;
-        require(totalSupply <= maxSupply);
-        RECIPIENT.transfer(msg.value);
-        LogBeerBought(now, msg.sender);
-    }
     
     function claimBeer(bytes32 _name) {
         require(balances[msg.sender] >= 1 * 10 ** 18);
         balances[msg.sender] -= 1 * 10 ** 18;
         totalSupply -= 1 * 10 ** 18;
         claimedList.push(_name);
+    }
+
+    function() payable {
+        require(msg.value == .2 ether);
+        balances[msg.sender] += 1 * 10 ** 18;
+        totalSupply += 1 * 10 ** 18;
+        require(totalSupply <= maxSupply);
+        RECIPIENT.transfer(msg.value);
+        LogBeerBought(now, msg.sender);
     }
 }
