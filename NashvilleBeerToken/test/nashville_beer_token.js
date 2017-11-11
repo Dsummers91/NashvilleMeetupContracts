@@ -13,7 +13,7 @@ contract('NashvilleBeerToken', async(accounts) => {
     let wei = web3.toWei(0.015, 'ether');
     await nashville_beer_token.claimBeer({value: wei});
     let balance = await nashville_beer_token.balanceOf(web3.eth.coinbase);
-    assert.equal(+balance, 1, "did not receive a token");
+    assert.equal(+balance, 2, "did not receive a token");
   });
 
   it('should throw when trying to claim a token without correct amount', async () => {
@@ -26,14 +26,6 @@ contract('NashvilleBeerToken', async(accounts) => {
     } catch (e) {
       assert.isTrue(true, "did not throw an error");
     }
-  });
-
-  it('should be able to redeem a  token', async () => {
-    let nashville_beer_token = await NashvilleBeerToken.deployed();
-    let wei = web3.toWei(0.015, 'ether');
-    await nashville_beer_token.redeemBeer('TEST');
-    let redeemedList = await nashville_beer_token.getRedeemedList();
-    assert.equal(web3.toUtf8(redeemedList[0]), "TEST", "Does not compute");
   });
 
 });
