@@ -22,6 +22,10 @@ contract NashvilleBeerToken is HumanStandardToken {
             maxSupply = _maxSupply;
         }
     
+    /*
+    * @note instead of burning the tokens we can identity each users address with a name
+    * Or just transfer to the Nashville Ethereum Meetup Address
+    */
     function registerName(bytes32 _name) {
         names[msg.sender] == _name;
     }
